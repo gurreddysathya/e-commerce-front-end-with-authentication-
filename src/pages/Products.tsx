@@ -335,17 +335,17 @@ const Products = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product) => (
-                  <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow">
+                  <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                     <Link to={`/product/${product.id}`}>
                       <div className="h-48 overflow-hidden">
                         <img 
-                          src={product.image} 
+                          src={product.image || `https://source.unsplash.com/random/600x400/?${encodeURIComponent(product.category)}&id=${product.id}`} 
                           alt={product.name} 
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     </Link>
-                    <CardContent className="p-4">
+                    <CardContent className="p-4 flex flex-col flex-1">
                       <div className="flex items-center mb-2">
                         <div className="flex text-yellow-400 mr-2">
                           {[...Array(5)].map((_, i) => (
@@ -365,13 +365,15 @@ const Products = () => {
                         </h3>
                       </Link>
                       <p className="font-bold text-gray-800 mb-3">${product.price.toFixed(2)}</p>
-                      <Button 
-                        onClick={() => addToCart(product)}
-                        size="sm"
-                        className="w-full bg-ecom-accent hover:bg-ecom-primary transition-colors"
-                      >
-                        Add to Cart
-                      </Button>
+                      <div className="mt-auto">
+                        <Button 
+                          onClick={() => addToCart(product)}
+                          size="sm"
+                          className="w-full bg-ecom-accent hover:bg-ecom-primary transition-colors"
+                        >
+                          Add to Cart
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}

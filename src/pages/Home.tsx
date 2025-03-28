@@ -13,6 +13,29 @@ const Home = () => {
   
   return (
     <div className="animate-fade-in">
+      {/* Categories Section - Moved to top */}
+      <section className="py-8 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-ecom-primary mb-6 text-center">
+            Shop by Category
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {categories.map((category) => (
+              <Link 
+                key={category}
+                to={`/products?category=${category}`}
+                className="bg-white rounded-lg p-4 shadow-sm text-center hover:shadow-md transition-shadow"
+              >
+                <div className="text-ecom-accent capitalize font-medium">
+                  {category}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-ecom-primary to-ecom-accent text-white py-12 md:py-24">
         <div className="container mx-auto px-4 flex flex-col items-center text-center">
@@ -89,17 +112,17 @@ const Home = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow">
+              <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                 <Link to={`/product/${product.id}`}>
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src={product.image} 
+                      src={product.image || `https://source.unsplash.com/random/600x400/?${encodeURIComponent(product.category)}&id=${product.id}`} 
                       alt={product.name} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 </Link>
-                <CardContent className="p-4">
+                <CardContent className="p-4 flex flex-col flex-1">
                   <div className="flex items-center mb-2">
                     <div className="flex text-yellow-400 mr-2">
                       {[...Array(5)].map((_, i) => (
@@ -119,38 +142,17 @@ const Home = () => {
                     </h3>
                   </Link>
                   <p className="font-bold text-gray-800 mb-3">${product.price.toFixed(2)}</p>
-                  <Button 
-                    onClick={() => addToCart(product)}
-                    size="sm"
-                    className="w-full bg-ecom-accent hover:bg-ecom-primary transition-colors"
-                  >
-                    Add to Cart
-                  </Button>
+                  <div className="mt-auto">
+                    <Button 
+                      onClick={() => addToCart(product)}
+                      size="sm"
+                      className="w-full bg-ecom-accent hover:bg-ecom-primary transition-colors"
+                    >
+                      Add to Cart
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-      
-      {/* Categories Section */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-ecom-primary mb-8 text-center">
-            Shop by Category
-          </h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((category) => (
-              <Link 
-                key={category}
-                to={`/products?category=${category}`}
-                className="bg-white rounded-lg p-4 shadow-sm text-center hover:shadow-md transition-shadow"
-              >
-                <div className="text-ecom-accent capitalize font-medium">
-                  {category}
-                </div>
-              </Link>
             ))}
           </div>
         </div>
@@ -165,7 +167,7 @@ const Home = () => {
           <p className="mb-8 max-w-2xl mx-auto">
             Browse our extensive catalog and find exactly what you need at the best prices.
           </p>
-          <Button asChild size="lg" className="bg-white text-ecom-accent hover:bg-gray-100">
+          <Button asChild size="lg" className="bg-white text-ecom-accent hover:bg-gray-100 animate-bounce">
             <Link to="/products">Shop Now</Link>
           </Button>
         </div>
