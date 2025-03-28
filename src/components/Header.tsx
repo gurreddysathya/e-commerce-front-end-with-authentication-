@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, Search, Menu, X, User, Package } from "lucide-react";
+import { ShoppingCart, Search, Menu, X, User, Package, Heart, Home } from "lucide-react";
 import { useStore } from "@/contexts/StoreContext";
 import { Badge } from "@/components/ui/badge";
 
@@ -33,7 +33,8 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-ecom-primary">
+            <Link to="/" className="text-2xl font-bold text-ecom-primary flex items-center">
+              <ShoppingCart size={28} className="mr-2 text-ecom-accent" />
               SleekShopper
             </Link>
           </div>
@@ -61,7 +62,12 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/products" className="text-gray-600 hover:text-ecom-accent transition-colors">
+            <Link to="/" className="text-gray-600 hover:text-ecom-accent transition-colors flex items-center">
+              <Home size={20} className="mr-1" />
+              Home
+            </Link>
+            <Link to="/products" className="text-gray-600 hover:text-ecom-accent transition-colors flex items-center">
+              <Package size={20} className="mr-1" />
               Products
             </Link>
             <Link to="/orders" className="text-gray-600 hover:text-ecom-accent transition-colors flex items-center">
@@ -129,10 +135,19 @@ const Header = () => {
           <nav className="md:hidden mt-3 py-3 border-t animate-slide-in">
             <div className="flex flex-col space-y-3">
               <Link 
-                to="/products" 
-                className="text-gray-700 font-medium py-2"
+                to="/" 
+                className="text-gray-700 font-medium py-2 flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
+                <Home size={18} className="mr-2" />
+                Home
+              </Link>
+              <Link 
+                to="/products" 
+                className="text-gray-700 font-medium py-2 flex items-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Package size={18} className="mr-2" />
                 All Products
               </Link>
               <Link 

@@ -13,7 +13,27 @@ const Home = () => {
   
   return (
     <div className="animate-fade-in">
-      {/* Categories Section - Moved to top */}
+      {/* Header Section */}
+      <section className="bg-gradient-to-r from-ecom-primary to-ecom-accent text-white py-12 md:py-24">
+        <div className="container mx-auto px-4 flex flex-col items-center text-center">
+          <h1 className="text-3xl md:text-5xl font-bold mb-6">
+            Shop the Latest Trends
+          </h1>
+          <p className="text-lg md:text-xl mb-8 max-w-2xl">
+            Discover quality products at competitive prices with free shipping on orders over $50.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button asChild size="lg" className="bg-white text-ecom-primary hover:bg-gray-100">
+              <Link to="/products">Shop Now</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              <Link to="/products?sale=true">View Sales</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Section - Moved below header */}
       <section className="py-8 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-ecom-primary mb-6 text-center">
@@ -32,26 +52,6 @@ const Home = () => {
                 </div>
               </Link>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-ecom-primary to-ecom-accent text-white py-12 md:py-24">
-        <div className="container mx-auto px-4 flex flex-col items-center text-center">
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">
-            Shop the Latest Trends
-          </h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl">
-            Discover quality products at competitive prices with free shipping on orders over $50.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button asChild size="lg" className="bg-white text-ecom-primary hover:bg-gray-100">
-              <Link to="/products">Shop Now</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-              <Link to="/products?sale=true">View Sales</Link>
-            </Button>
           </div>
         </div>
       </section>
@@ -116,9 +116,10 @@ const Home = () => {
                 <Link to={`/product/${product.id}`}>
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src={product.image || `https://source.unsplash.com/random/600x400/?${encodeURIComponent(product.category)}&id=${product.id}`} 
+                      src={`https://source.unsplash.com/random/600x400/?${encodeURIComponent(product.category)}&id=${product.id}`} 
                       alt={product.name} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                   </div>
                 </Link>
