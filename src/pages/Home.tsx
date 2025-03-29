@@ -11,6 +11,14 @@ const Home = () => {
   // Categories derived from products
   const categories = [...new Set(products.map(product => product.category))];
   
+  // Function to generate Unsplash image URL
+  const getUnsplashImageUrl = (category: string, productId: number) => {
+    const width = 600;
+    const height = 400;
+    const seed = productId; // Use product ID as a seed for consistent images
+    return `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(category)}&sig=${seed}`;
+  };
+
   return (
     <div className="animate-fade-in">
       {/* Header Section */}
@@ -33,7 +41,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories Section - Moved below header */}
+      {/* Categories Section - Placed below Header */}
       <section className="py-8 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-ecom-primary mb-6 text-center">
@@ -116,7 +124,7 @@ const Home = () => {
                 <Link to={`/product/${product.id}`}>
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src={`https://source.unsplash.com/random/600x400/?${encodeURIComponent(product.category)}&id=${product.id}`} 
+                      src={getUnsplashImageUrl(product.category, product.id)} 
                       alt={product.name} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       loading="lazy"
@@ -168,7 +176,11 @@ const Home = () => {
           <p className="mb-8 max-w-2xl mx-auto">
             Browse our extensive catalog and find exactly what you need at the best prices.
           </p>
-          <Button asChild size="lg" className="bg-white text-ecom-accent hover:bg-gray-100 animate-bounce">
+          <Button 
+            asChild 
+            size="lg" 
+            className="bg-white text-ecom-accent hover:bg-gray-100 animate-bounce"
+          >
             <Link to="/products">Shop Now</Link>
           </Button>
         </div>
