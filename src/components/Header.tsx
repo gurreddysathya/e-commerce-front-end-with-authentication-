@@ -3,12 +3,15 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, Search, Menu, X, User, Package, Heart, Home } from "lucide-react";
+import { ShoppingCart, Search, Menu, X, User, Package, Heart, Home, LogIn } from "lucide-react";
 import { useStore } from "@/contexts/StoreContext";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => {
   const { cart } = useStore();
+  const { user, userProfile } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
@@ -74,9 +77,26 @@ const Header = () => {
               <Package size={18} className="mr-1" />
               Orders
             </Link>
-            <Link to="/account" className="text-gray-600 hover:text-ecom-accent transition-colors">
-              <User size={20} />
-            </Link>
+            
+            {user ? (
+              <Link to="/account" className="text-gray-600 hover:text-ecom-accent transition-colors">
+                <Avatar className="h-8 w-8">
+                  {userProfile?.avatar_url ? (
+                    <AvatarImage src={userProfile.avatar_url} />
+                  ) : (
+                    <AvatarFallback className="bg-ecom-primary text-white text-xs">
+                      {userProfile?.first_name?.[0] || user.email?.[0] || 'U'}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+              </Link>
+            ) : (
+              <Link to="/auth" className="text-gray-600 hover:text-ecom-accent transition-colors flex items-center">
+                <LogIn size={20} className="mr-1" />
+                Login
+              </Link>
+            )}
+            
             <Link to="/cart" className="relative">
               <ShoppingCart size={24} className="text-ecom-accent" />
               {cartItemCount > 0 && (
@@ -158,14 +178,25 @@ const Header = () => {
                 <Package size={18} className="mr-2" />
                 My Orders
               </Link>
-              <Link 
-                to="/account" 
-                className="text-gray-700 font-medium py-2 flex items-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <User size={18} className="mr-2" />
-                My Account
-              </Link>
+              {user ? (
+                <Link 
+                  to="/account" 
+                  className="text-gray-700 font-medium py-2 flex items-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User size={18} className="mr-2" />
+                  My Account
+                </Link>
+              ) : (
+                <Link 
+                  to="/auth" 
+                  className="text-gray-700 font-medium py-2 flex items-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <LogIn size={18} className="mr-2" />
+                  Login / Register
+                </Link>
+              )}
             </div>
           </nav>
         )}

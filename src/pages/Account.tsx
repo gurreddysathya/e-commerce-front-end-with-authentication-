@@ -1,9 +1,60 @@
 
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, MapPin, ShoppingBag, CreditCard, Heart, Settings } from "lucide-react";
+import { User, MapPin, ShoppingBag, CreditCard, Heart, Settings, Mail, Phone } from "lucide-react";
+import { Navigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Account = () => {
+  const { user, userProfile, signOut, updateProfile, loading } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: userProfile?.first_name || "",
+    last_name: userProfile?.last_name || "",
+    avatar_url: userProfile?.avatar_url || "",
+  });
+
+  // If not logged in, redirect to login page
+  if (!loading && !user) {
+    return <Navigate to="/auth" />;
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await updateProfile(formData);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      first_name: userProfile?.first_name || "",
+      last_name: userProfile?.last_name || "",
+      avatar_url: userProfile?.avatar_url || "",
+    });
+    setIsEditing(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="py-8 animate-fade-in">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h1 className="text-2xl md:text-3xl font-bold mb-8 text-ecom-primary">Loading...</h1>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-8 animate-fade-in">
       <div className="container mx-auto px-4 max-w-5xl">
@@ -15,11 +66,21 @@ const Account = () => {
             <Card>
               <CardHeader className="pb-4">
                 <div className="flex flex-col items-center">
-                  <div className="w-20 h-20 bg-ecom-primary/10 rounded-full flex items-center justify-center mb-3">
-                    <User size={36} className="text-ecom-primary" />
-                  </div>
-                  <CardTitle>Guest User</CardTitle>
-                  <CardDescription>guest@example.com</CardDescription>
+                  <Avatar className="w-20 h-20 mb-3">
+                    {userProfile?.avatar_url ? (
+                      <AvatarImage src={userProfile.avatar_url} alt={`${userProfile.first_name || ''} ${userProfile.last_name || ''}`} />
+                    ) : (
+                      <AvatarFallback className="bg-ecom-primary/10 text-ecom-primary text-xl">
+                        {userProfile?.first_name?.[0] || user?.email?.[0] || 'U'}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <CardTitle>
+                    {userProfile?.first_name && userProfile?.last_name 
+                      ? `${userProfile.first_name} ${userProfile.last_name}`
+                      : "Profile"}
+                  </CardTitle>
+                  <CardDescription>{user?.email}</CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
@@ -48,6 +109,13 @@ const Account = () => {
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </Button>
+                  <Button 
+                    variant="destructive" 
+                    className="w-full justify-start mt-4"
+                    onClick={signOut}
+                  >
+                    Sign Out
+                  </Button>
                 </nav>
               </CardContent>
             </Card>
@@ -59,51 +127,111 @@ const Account = () => {
               <CardHeader>
                 <CardTitle>Profile Information</CardTitle>
                 <CardDescription>
-                  Manage your account details
+                  {isEditing 
+                    ? "Edit your account details below" 
+                    : "Manage your account details"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">First Name</label>
-                      <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
-                        Guest
+                {isEditing ? (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="first_name">First Name</Label>
+                        <Input
+                          id="first_name"
+                          name="first_name"
+                          value={formData.first_name}
+                          onChange={handleChange}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="last_name">Last Name</Label>
+                        <Input
+                          id="last_name"
+                          name="last_name"
+                          value={formData.last_name}
+                          onChange={handleChange}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="email">Email Address</Label>
+                        <div className="flex items-center mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
+                          <Mail className="mr-2 h-4 w-4 text-gray-400" />
+                          {user?.email}
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="avatar_url">Avatar URL</Label>
+                        <Input
+                          id="avatar_url"
+                          name="avatar_url"
+                          value={formData.avatar_url}
+                          onChange={handleChange}
+                          placeholder="https://example.com/avatar.jpg"
+                          className="mt-1"
+                        />
                       </div>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Last Name</label>
-                      <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
-                        User
+                    
+                    <div className="pt-4 flex justify-end space-x-2">
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={handleCancel}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        className="bg-ecom-accent hover:bg-ecom-primary"
+                      >
+                        Save Changes
+                      </Button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">First Name</label>
+                        <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
+                          {userProfile?.first_name || "Not provided"}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Last Name</label>
+                        <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
+                          {userProfile?.last_name || "Not provided"}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Email Address</label>
+                        <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md flex items-center">
+                          <Mail className="mr-2 h-4 w-4 text-gray-400" />
+                          {user?.email}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Account ID</label>
+                        <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md text-xs text-gray-500 truncate">
+                          {user?.id}
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Email Address</label>
-                      <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
-                        guest@example.com
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Phone Number</label>
-                      <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
-                        (555) 123-4567
-                      </div>
+                    
+                    <div className="pt-4 flex justify-end">
+                      <Button 
+                        className="bg-ecom-accent hover:bg-ecom-primary"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        Edit Profile
+                      </Button>
                     </div>
                   </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Default Address</label>
-                    <div className="mt-1 p-2 bg-gray-50 border border-gray-200 rounded-md">
-                      123 Shop Street, Market City, ST 12345
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4 flex justify-end">
-                    <Button className="bg-ecom-accent hover:bg-ecom-primary">
-                      Edit Profile
-                    </Button>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
             
