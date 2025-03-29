@@ -4,42 +4,99 @@ import { useStore } from "@/contexts/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ShoppingBag, TrendingUp, Award, Truck } from "lucide-react";
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious 
+} from "@/components/ui/carousel";
+import { useState, useEffect } from "react";
 
 const Home = () => {
   const { featuredProducts, products, addToCart } = useStore();
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   // Categories derived from products
   const categories = [...new Set(products.map(product => product.category))];
   
-  // Function to generate Unsplash image URL
+  // Function to generate Unsplash image URL with specific parameters
   const getUnsplashImageUrl = (category: string, productId: number) => {
+    // Use specific width, height, and seed for consistent images
     const width = 600;
     const height = 400;
-    const seed = productId; // Use product ID as a seed for consistent images
-    return `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(category)}&sig=${seed}`;
+    // Using product ID as a seed ensures the same image is returned for the same product
+    const seed = productId;
+    // Construct URL with specific category and seed parameter
+    return `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(category.replace(' ', ','))}&sig=${seed}`;
   };
+
+  // Carousel images for header
+  const carouselImages = [
+    {
+      url: "https://source.unsplash.com/1600x500/?shopping,ecommerce",
+      heading: "Shop the Latest Trends",
+      description: "Discover quality products at competitive prices with free shipping on orders over $50."
+    },
+    {
+      url: "https://source.unsplash.com/1600x500/?fashion,clothes",
+      heading: "New Fashion Arrivals",
+      description: "Explore our latest collection of stylish apparel for all seasons."
+    },
+    {
+      url: "https://source.unsplash.com/1600x500/?electronics,gadgets",
+      heading: "Tech & Gadgets",
+      description: "Find the newest electronics and smart gadgets at amazing prices."
+    }
+  ];
 
   return (
     <div className="animate-fade-in">
-      {/* Header Section */}
-      <section className="bg-gradient-to-r from-ecom-primary to-ecom-accent text-white py-12 md:py-24">
-        <div className="container mx-auto px-4 flex flex-col items-center text-center">
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">
-            Shop the Latest Trends
-          </h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl">
-            Discover quality products at competitive prices with free shipping on orders over $50.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button asChild size="lg" className="bg-white text-ecom-primary hover:bg-gray-100">
-              <Link to="/products">Shop Now</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-              <Link to="/products?sale=true">View Sales</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Header Carousel Section */}
+      {isClient && (
+        <section className="relative">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {carouselImages.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div className="relative h-[400px] md:h-[500px] w-full">
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center" 
+                      style={{ backgroundImage: `url(${image.url})` }}
+                    >
+                      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                    </div>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
+                      <h1 className="text-3xl md:text-5xl font-bold mb-6">
+                        {image.heading}
+                      </h1>
+                      <p className="text-lg md:text-xl mb-8 max-w-2xl">
+                        {image.description}
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <Button asChild size="lg" className="bg-white text-ecom-primary hover:bg-gray-100">
+                          <Link to="/products">Shop Now</Link>
+                        </Button>
+                        <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+                          <Link to="/products?sale=true">View Sales</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
+              <CarouselPrevious className="relative inset-auto left-0 translate-y-0 mx-2" />
+              <CarouselNext className="relative inset-auto right-0 translate-y-0 mx-2" />
+            </div>
+          </Carousel>
+        </section>
+      )}
 
       {/* Categories Section - Placed below Header */}
       <section className="py-8 bg-gray-50">
