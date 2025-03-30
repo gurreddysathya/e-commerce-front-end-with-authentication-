@@ -34,6 +34,22 @@ const ProductDetail = () => {
     }
   }, [product, products]);
   
+  // Function to generate reliable product images
+  const getProductImage = (category: string) => {
+    // Using reliable image placeholders based on category
+    const imageMap: Record<string, string> = {
+      "electronics": "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=600&auto=format",
+      "clothing": "https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=600&auto=format",
+      "books": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=600&auto=format",
+      "toys": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?q=80&w=600&auto=format",
+      "furniture": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=600&auto=format",
+      "jewelry": "https://images.unsplash.com/photo-1599643477877-530eb83abc8e?q=80&w=600&auto=format",
+      "sports": "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=600&auto=format"
+    };
+    
+    return imageMap[category.toLowerCase()] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600&auto=format";
+  };
+  
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
@@ -79,7 +95,7 @@ const ProductDetail = () => {
           {/* Product Image */}
           <div className="bg-white rounded-lg overflow-hidden shadow-sm">
             <img 
-              src={product.image} 
+              src={getProductImage(product.category)} 
               alt={product.name} 
               className="w-full h-full object-contain aspect-square"
             />
@@ -196,7 +212,7 @@ const ProductDetail = () => {
                     }}
                   >
                     <img 
-                      src={relatedProduct.image} 
+                      src={getProductImage(relatedProduct.category)} 
                       alt={relatedProduct.name} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />

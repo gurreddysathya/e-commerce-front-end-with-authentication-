@@ -23,26 +23,36 @@ const Home = () => {
   // Categories derived from products
   const categories = [...new Set(products.map(product => product.category))];
   
-  // Function to generate image URL with specific parameters
-  const getProductImage = (category: string, productId: number) => {
-    // Fallback to a reliable placeholder image service
-    return `https://placehold.co/600x400/eee/333?text=${encodeURIComponent(category)}+${productId}`;
+  // Function to generate reliable product images
+  const getProductImage = (category: string) => {
+    // Using reliable image placeholders based on category
+    const imageMap: Record<string, string> = {
+      "electronics": "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=600&auto=format",
+      "clothing": "https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=600&auto=format",
+      "books": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=600&auto=format",
+      "toys": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?q=80&w=600&auto=format",
+      "furniture": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=600&auto=format",
+      "jewelry": "https://images.unsplash.com/photo-1599643477877-530eb83abc8e?q=80&w=600&auto=format",
+      "sports": "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=600&auto=format"
+    };
+    
+    return imageMap[category.toLowerCase()] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600&auto=format";
   };
 
-  // Carousel images for header
+  // Carousel images for header with reliable URLs
   const carouselImages = [
     {
-      url: "https://placehold.co/1600x500/192652/ffffff?text=Shop+Latest+Trends",
+      url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600&auto=format",
       heading: "Shop the Latest Trends",
       description: "Discover quality products at competitive prices with free shipping on orders over $50."
     },
     {
-      url: "https://placehold.co/1600x500/6E59A5/ffffff?text=Fashion+Arrivals",
+      url: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1600&auto=format",
       heading: "New Fashion Arrivals",
       description: "Explore our latest collection of stylish apparel for all seasons."
     },
     {
-      url: "https://placehold.co/1600x500/8B5CF6/ffffff?text=Tech+and+Gadgets",
+      url: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?q=80&w=1600&auto=format",
       heading: "Tech & Gadgets",
       description: "Find the newest electronics and smart gadgets at amazing prices."
     }
@@ -175,7 +185,7 @@ const Home = () => {
                 <Link to={`/product/${product.id}`}>
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src={getProductImage(product.category, product.id)} 
+                      src={getProductImage(product.category)} 
                       alt={product.name} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       loading="lazy"

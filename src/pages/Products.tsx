@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -24,7 +23,6 @@ const Products = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   
-  // Filters
   const [searchTerm, setSearchTerm] = useState(queryParams.get("search") || "");
   const [selectedCategory, setSelectedCategory] = useState<string>(queryParams.get("category") || "");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1500]);
@@ -32,14 +30,11 @@ const Products = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
-  // Get unique categories
   const categories = [...new Set(products.map(product => product.category))];
   
-  // Apply filters
   useEffect(() => {
     let result = [...products];
     
-    // Search term filter
     if (searchTerm) {
       result = result.filter(product => 
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -47,17 +42,14 @@ const Products = () => {
       );
     }
     
-    // Category filter
     if (selectedCategory) {
       result = result.filter(product => product.category === selectedCategory);
     }
     
-    // Price range filter
     result = result.filter(product => 
       product.price >= priceRange[0] && product.price <= priceRange[1]
     );
     
-    // Rating filter
     if (minRating > 0) {
       result = result.filter(product => product.rating >= minRating);
     }
@@ -65,12 +57,10 @@ const Products = () => {
     setFilteredProducts(result);
   }, [products, searchTerm, selectedCategory, priceRange, minRating]);
   
-  // Handle search
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
   };
   
-  // Reset all filters
   const resetFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
@@ -78,9 +68,18 @@ const Products = () => {
     setMinRating(0);
   };
 
-  // Function to generate reliable product images
-  const getProductImage = (category: string, productId: number) => {
-    return `https://placehold.co/600x400/eee/333?text=${encodeURIComponent(category)}+${productId}`;
+  const getProductImage = (category: string) => {
+    const imageMap: Record<string, string> = {
+      "electronics": "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=600&auto=format",
+      "clothing": "https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=600&auto=format",
+      "books": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=600&auto=format",
+      "toys": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?q=80&w=600&auto=format",
+      "furniture": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=600&auto=format",
+      "jewelry": "https://images.unsplash.com/photo-1599643477877-530eb83abc8e?q=80&w=600&auto=format",
+      "sports": "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=600&auto=format"
+    };
+    
+    return imageMap[category.toLowerCase()] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600&auto=format";
   };
   
   return (
@@ -89,7 +88,6 @@ const Products = () => {
         <h1 className="text-2xl md:text-3xl font-bold mb-8 text-ecom-primary">Products</h1>
         
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Filters - Desktop */}
           <div className="hidden md:block w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm p-4 sticky top-24">
               <div className="flex justify-between items-center mb-4">
@@ -105,7 +103,6 @@ const Products = () => {
                 </Button>
               </div>
               
-              {/* Search */}
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2">Search</label>
                 <form onSubmit={handleSearch} className="relative">
@@ -120,7 +117,6 @@ const Products = () => {
                 </form>
               </div>
               
-              {/* Categories */}
               <div className="mb-6">
                 <h3 className="text-sm font-medium mb-2">Categories</h3>
                 <div className="space-y-2">
@@ -144,7 +140,6 @@ const Products = () => {
                 </div>
               </div>
               
-              {/* Price Range */}
               <div className="mb-6">
                 <h3 className="text-sm font-medium mb-2">Price Range</h3>
                 <Slider
@@ -161,7 +156,6 @@ const Products = () => {
                 </div>
               </div>
               
-              {/* Rating */}
               <div>
                 <h3 className="text-sm font-medium mb-2">Rating</h3>
                 <div className="space-y-2">
@@ -197,7 +191,6 @@ const Products = () => {
             </div>
           </div>
           
-          {/* Mobile Filter Button */}
           <div className="md:hidden mb-4">
             <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
               <SheetTrigger asChild>
@@ -214,7 +207,6 @@ const Products = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className="py-4">
-                  {/* Search */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium mb-2">Search</label>
                     <form onSubmit={handleSearch} className="relative">
@@ -229,7 +221,6 @@ const Products = () => {
                     </form>
                   </div>
                   
-                  {/* Categories */}
                   <div className="mb-6">
                     <h3 className="text-sm font-medium mb-2">Categories</h3>
                     <div className="space-y-2">
@@ -253,7 +244,6 @@ const Products = () => {
                     </div>
                   </div>
                   
-                  {/* Price Range */}
                   <div className="mb-6">
                     <h3 className="text-sm font-medium mb-2">Price Range</h3>
                     <Slider
@@ -270,7 +260,6 @@ const Products = () => {
                     </div>
                   </div>
                   
-                  {/* Rating */}
                   <div className="mb-6">
                     <h3 className="text-sm font-medium mb-2">Rating</h3>
                     <div className="space-y-2">
@@ -327,7 +316,6 @@ const Products = () => {
             </Sheet>
           </div>
           
-          {/* Products Grid */}
           <div className="flex-1">
             {filteredProducts.length === 0 ? (
               <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -344,7 +332,7 @@ const Products = () => {
                     <Link to={`/product/${product.id}`}>
                       <div className="h-48 overflow-hidden">
                         <img 
-                          src={getProductImage(product.category, product.id)} 
+                          src={getProductImage(product.category)} 
                           alt={product.name} 
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
