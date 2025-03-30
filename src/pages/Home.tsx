@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { useStore } from "@/contexts/StoreContext";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { useState, useEffect } from "react";
+import { getProductImage, getHeroImage } from "@/utils/imageUtils";
 
 const Home = () => {
   const { featuredProducts, products, addToCart } = useStore();
@@ -23,36 +25,20 @@ const Home = () => {
   // Categories derived from products
   const categories = [...new Set(products.map(product => product.category))];
   
-  // Function to generate reliable product images
-  const getProductImage = (category: string) => {
-    // Using reliable image placeholders based on category
-    const imageMap: Record<string, string> = {
-      "electronics": "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=600&auto=format",
-      "clothing": "https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=600&auto=format",
-      "books": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=600&auto=format",
-      "toys": "https://images.unsplash.com/photo-1558060370-d644479cb6f7?q=80&w=600&auto=format",
-      "furniture": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=600&auto=format",
-      "jewelry": "https://images.unsplash.com/photo-1599643477877-530eb83abc8e?q=80&w=600&auto=format",
-      "sports": "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=600&auto=format"
-    };
-    
-    return imageMap[category.toLowerCase()] || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600&auto=format";
-  };
-
   // Carousel images for header with reliable URLs
   const carouselImages = [
     {
-      url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600&auto=format",
+      url: getHeroImage(0),
       heading: "Shop the Latest Trends",
       description: "Discover quality products at competitive prices with free shipping on orders over $50."
     },
     {
-      url: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1600&auto=format",
+      url: getHeroImage(1),
       heading: "New Fashion Arrivals",
       description: "Explore our latest collection of stylish apparel for all seasons."
     },
     {
-      url: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?q=80&w=1600&auto=format",
+      url: getHeroImage(2),
       heading: "Tech & Gadgets",
       description: "Find the newest electronics and smart gadgets at amazing prices."
     }
@@ -81,14 +67,9 @@ const Home = () => {
                       <p className="text-lg md:text-xl mb-8 max-w-2xl">
                         {image.description}
                       </p>
-                      <div className="flex flex-col sm:flex-row gap-4">
-                        <Button asChild size="lg" className="bg-white text-ecom-primary hover:bg-gray-100">
-                          <Link to="/products">Shop Now</Link>
-                        </Button>
-                        <Button asChild variant="outline" size="lg" className="border-white text-white">
-                          <Link to="/products?sale=true">View Sales</Link>
-                        </Button>
-                      </div>
+                      <Button asChild size="lg" className="bg-white text-ecom-primary hover:bg-gray-100">
+                        <Link to="/products">Shop Now</Link>
+                      </Button>
                     </div>
                   </div>
                 </CarouselItem>
@@ -102,23 +83,31 @@ const Home = () => {
         </section>
       )}
 
-      {/* Categories Section - Placed below Header */}
-      <section className="py-8 bg-gray-50">
+      {/* Categories Section - Moved directly below Header */}
+      <section className="py-10">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-ecom-primary mb-6 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-ecom-primary mb-8 text-center">
             Shop by Category
           </h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {categories.map((category) => (
               <Link 
                 key={category}
                 to={`/products?category=${category}`}
-                className="bg-white rounded-lg p-4 shadow-sm text-center hover:shadow-md transition-shadow"
+                className="flex flex-col items-center group transition-transform hover:scale-105"
               >
-                <div className="text-ecom-accent capitalize font-medium">
-                  {category}
+                <div className="h-40 w-full overflow-hidden rounded-lg mb-3 bg-gray-100">
+                  <img
+                    src={getProductImage(category)}
+                    alt={`${category} category`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
+                <span className="text-ecom-primary font-medium capitalize text-center">
+                  {category}
+                </span>
               </Link>
             ))}
           </div>
