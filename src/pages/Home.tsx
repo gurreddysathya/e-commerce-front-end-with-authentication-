@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { useStore } from "@/contexts/StoreContext";
 import { Button } from "@/components/ui/button";
@@ -24,31 +23,26 @@ const Home = () => {
   // Categories derived from products
   const categories = [...new Set(products.map(product => product.category))];
   
-  // Function to generate Unsplash image URL with specific parameters
-  const getUnsplashImageUrl = (category: string, productId: number) => {
-    // Use specific width, height, and seed for consistent images
-    const width = 600;
-    const height = 400;
-    // Using product ID as a seed ensures the same image is returned for the same product
-    const seed = productId;
-    // Construct URL with specific category and seed parameter
-    return `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(category.replace(' ', ','))}&sig=${seed}`;
+  // Function to generate image URL with specific parameters
+  const getProductImage = (category: string, productId: number) => {
+    // Fallback to a reliable placeholder image service
+    return `https://placehold.co/600x400/eee/333?text=${encodeURIComponent(category)}+${productId}`;
   };
 
   // Carousel images for header
   const carouselImages = [
     {
-      url: "https://source.unsplash.com/1600x500/?shopping,ecommerce",
+      url: "https://placehold.co/1600x500/192652/ffffff?text=Shop+Latest+Trends",
       heading: "Shop the Latest Trends",
       description: "Discover quality products at competitive prices with free shipping on orders over $50."
     },
     {
-      url: "https://source.unsplash.com/1600x500/?fashion,clothes",
+      url: "https://placehold.co/1600x500/6E59A5/ffffff?text=Fashion+Arrivals",
       heading: "New Fashion Arrivals",
       description: "Explore our latest collection of stylish apparel for all seasons."
     },
     {
-      url: "https://source.unsplash.com/1600x500/?electronics,gadgets",
+      url: "https://placehold.co/1600x500/8B5CF6/ffffff?text=Tech+and+Gadgets",
       heading: "Tech & Gadgets",
       description: "Find the newest electronics and smart gadgets at amazing prices."
     }
@@ -81,7 +75,7 @@ const Home = () => {
                         <Button asChild size="lg" className="bg-white text-ecom-primary hover:bg-gray-100">
                           <Link to="/products">Shop Now</Link>
                         </Button>
-                        <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+                        <Button asChild variant="outline" size="lg" className="border-white text-white">
                           <Link to="/products?sale=true">View Sales</Link>
                         </Button>
                       </div>
@@ -181,7 +175,7 @@ const Home = () => {
                 <Link to={`/product/${product.id}`}>
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src={getUnsplashImageUrl(product.category, product.id)} 
+                      src={getProductImage(product.category, product.id)} 
                       alt={product.name} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       loading="lazy"

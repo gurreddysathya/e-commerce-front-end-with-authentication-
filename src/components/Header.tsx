@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, Search, Menu, X, User, Package, Heart, Home, LogIn } from "lucide-react";
+import { ShoppingCart, Search, Menu, X, User, Package, Heart, Home, LogIn, ShoppingBag } from "lucide-react";
 import { useStore } from "@/contexts/StoreContext";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,8 +37,8 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold text-ecom-primary flex items-center">
-              <ShoppingCart size={28} className="mr-2 text-ecom-accent" />
-              SleekShopper
+              <ShoppingBag size={28} className="mr-2 text-ecom-accent" />
+              FashionFusion
             </Link>
           </div>
 

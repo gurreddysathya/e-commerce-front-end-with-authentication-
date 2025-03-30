@@ -77,6 +77,11 @@ const Products = () => {
     setPriceRange([0, 1500]);
     setMinRating(0);
   };
+
+  // Function to generate reliable product images
+  const getProductImage = (category: string, productId: number) => {
+    return `https://placehold.co/600x400/eee/333?text=${encodeURIComponent(category)}+${productId}`;
+  };
   
   return (
     <div className="py-8 animate-fade-in">
@@ -339,7 +344,7 @@ const Products = () => {
                     <Link to={`/product/${product.id}`}>
                       <div className="h-48 overflow-hidden">
                         <img 
-                          src={product.image || `https://source.unsplash.com/random/600x400/?${encodeURIComponent(product.category)}&id=${product.id}`} 
+                          src={getProductImage(product.category, product.id)} 
                           alt={product.name} 
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
