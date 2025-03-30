@@ -1,3 +1,4 @@
+
 # Welcome to your Lovable project
 
 ## Project info
@@ -50,6 +51,28 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
+## Environment Variables
+
+This project supports the following environment variables:
+
+- `VITE_SUPABASE_URL`: Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous/public API key
+
+To use these locally:
+
+1. Create a `.env` file in the project root directory
+2. Add your environment variables:
+   ```
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+For Netlify deployment:
+
+1. Go to your Netlify site dashboard
+2. Navigate to Site settings > Environment variables
+3. Add the variables with the same names and values
+
 ## What technologies are used for this project?
 
 This project is built with .
@@ -63,6 +86,8 @@ This project is built with .
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/34409e82-7148-4143-9d0f-d31d33253397) and click on Share -> Publish.
+
+Alternatively, you can deploy directly to Netlify by connecting your GitHub repository to Netlify. The included `netlify.toml` file already contains the correct build settings.
 
 ## I want to use a custom domain - is that possible?
 
